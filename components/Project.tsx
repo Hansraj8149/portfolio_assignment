@@ -4,13 +4,26 @@ import axios from "axios";
 import { ArrowUpCircleIcon, ChevronRightIcon, PackageIcon } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react";
+import SkeletonLoading from "./SkeltonLoading";
 
+
+interface projectProps{
+  id:number,
+  title:string,
+  description:string,
+  technologies:string[],
+  liveLink:string,
+  repoLink:string,
+  imageUrl:string,
+}
 export default function Project() {
-    const [projects, setProjects]:any = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+    const [projects, setProjects] = useState<projectProps[]>([]);
 
     async function getProjects() {
         try {
-            const response = await axios.get('/api/getProjects');
+            const response = await axios.get('/api/getPorjectByCount?count=3');
+            setIsLoading(false);
             setProjects(response.data);
         } catch (error) {
             console.error('Error fetching projects:', error);
@@ -27,13 +40,14 @@ export default function Project() {
         <div className="space-y-3">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Featured Projects</h2>
           <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-            Check out some of the projects our customers have been working on.
+            Check out some of the projects I working on.
           </p>
         </div>
+          {isLoading && <SkeletonLoading number={3}/>}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project:any) => (
-          <div className="flex flex-col items-stretch gap-2">
-                        <Card key={project.id}>
+          {projects.map((project) => (
+          <div key={project.id} className="flex flex-col items-stretch gap-2">
+                        <Card>
                             <Link href={project.liveLink}>
                              
                             </Link>

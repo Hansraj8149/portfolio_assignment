@@ -1,28 +1,23 @@
 
 import { MailIcon, MountainIcon, PhoneIcon } from "lucide-react"
 import Link from "next/link"
-
+import { navLinks } from "@/constants"
 export default function Footer() {
   return (
     <footer className="w-full bg-gray-50 py-12 sm:py-16 dark:bg-gray-950">
       <div className="container grid gap-4 px-4 text-center md:px-6 md:grid-cols-2 lg:grid-cols-4 lg:items-center lg:justify-between">
         <div className="flex items-center space-x-2 lg:order-last lg:col-start-2">
-          <div className="h-6 w-6" >HS</div>
+        <img  height="48" width="48" src="./logo.png" alt="Hansraj"/>
           <span className="sr-only">Hansraj Saini</span>
         </div>
         <nav className="flex flex-col gap-2 text-sm lg:flex-row lg:gap-4 lg:justify-center">
-          <Link className="hover:underline underline-offset-4" href="#">
-            Home
+          {navLinks.map((navLink)=> (
+
+            <Link key={navLink.value} className="hover:underline underline-offset-4" href={navLink.href}>
+            {navLink.label}
           </Link>
-          <Link className="hover:underline underline-offset-4" href="#">
-            About
-          </Link>
-          <Link className="hover:underline underline-offset-4" href="#">
-            Portfolio
-          </Link>
-          <Link className="hover:underline underline-offset-4" href="#">
-            Contact
-          </Link>
+            ))}
+         
         </nav>
         <div className="space-y-2 lg:col-start-3 lg:col-span-2 lg:order-last">
           <h4 className="font-bold tracking-tighter">Get in Touch</h4>

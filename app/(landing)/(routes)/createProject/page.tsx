@@ -12,14 +12,14 @@ import {
   } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import {z} from 'zod'
-import { formSchema, technologyOptions } from "./constants"
+import { formSchema, } from "./constants"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import axios from "axios"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function CreateProject() {
-
+const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -42,26 +42,30 @@ const handleTechnologyInputChange = (e:any) => {
 };
 
 const handleAddTechnology = () => {
-  if (newTechnology.trim() !== '') {
-    setTechnologies([...technologies, newTechnology.trim()]);
+
+    setTechnologies([...technologies, newTechnology]);
+    // console.log(technologies)
     setNewTechnology('');
-  }
+  
 };
 
 const handleRemoveTechnology = (index:any) => {
   const updatedTechnologies = [...technologies];
   updatedTechnologies.splice(index, 1);
   setTechnologies(updatedTechnologies);
-  console.log(technologies)
+  // console.log(technologies)
 };
 
     const isLoading = form.formState.isSubmitting;
 
     async function onSubmit(values:z.infer<typeof formSchema>){
-
+values.technologies=technologies
         try {
             const response:any = await axios.post('api/createProject', values);
-            if(response.ok) alert("project created successfull")
+
+            if(response) alert("project created successfull")
+            router.push('/projects')
+            
         }catch(error) {
     console.log(error)
     alert("some error occured while creating project")
@@ -69,6 +73,16 @@ const handleRemoveTechnology = (index:any) => {
 
     }
   return (
+    <section className="w-full mt-10 lg:mt-0 py-12 md:py-24 lg:py-32">
+    <div className="container px-4 md:px-6">
+      <div className="flex flex-col gap-2 mb-10 md:items-center md:gap-4 lg:gap-8 lg:mb-16">
+        <div className="space-y-3 text-center">
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Add Project</h1>
+          <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+            Enter the details to add a new Project.
+          </p>
+        </div>
+      </div>
     <Form {...form} >
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
         <div className="grid lg:grid-cols-2 gap-4">
@@ -114,12 +128,8 @@ const handleRemoveTechnology = (index:any) => {
 
 
               <div className="flex flex-wrap gap-2">
-                {technologies.map((atech, index) => (
-                  <div key={index} className="bg-gray-200 rounded-md px-2 py-1">
-                    {technologies[technologies.length-1]}
-                    <button type="button" onClick={() => handleRemoveTechnology(index)} className="ml-2 text-red-500 focus:outline-none">Remove</button>
-                  </div>
-                ))}
+               {technologies[technologies.length-1]}
+                <button type="button" onClick={() => handleRemoveTechnology(technologies.length-1)} className="ml-2 text-red-500 focus:outline-none">Remove</button>
               </div>
               <Input
                 id="technologies"
@@ -185,9 +195,11 @@ const handleRemoveTechnology = (index:any) => {
                     )}
                 />
         </div>
-      <Button type="submit">Submit</Button>
+      <Button disabled={isLoading} type="submit">Submit</Button>
     </form>
   </Form>
+  </div>
+  </section>
   )
 }
 

@@ -1,61 +1,114 @@
+"use client";
+import axios from "axios";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { ArrowUpCircleIcon, ChevronRightIcon, PackageIcon } from "lucide-react";
+import SkeletonLoading from "./SkeltonLoading";
 
-import Link from "next/link"
-
+interface blogProps {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  imageUrl: string;
+  createdAt: Date;
+}
 export default function Blog() {
+  const [blogs, setBlogs] = useState<blogProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  async function fetchBlogs() {
+    const response = await axios.get("api/getBlogByCount?count=2");
+    setIsLoading(false);
+    setBlogs(response.data);
+    console.log(blogs);
+  }
+  useEffect(() => {
+    fetchBlogs();
+    console.log(blogs);
+  }, []);
+
   return (
-    <section className="bg-gray-100 py-12">
-      <div className="container px-4 space-y-12 md:px-6">
-        <div className="space-y-2">
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">From the Blog</h2>
-          <p className="text-gray-500 dark:text-gray-400">Stories, tips, and features from our community</p>
+    <section className="container w-full py-12 md:py-24 lg:py-32">
+      <div className="container px-4 grid items-center justify-center gap-4 text-center md:px-6 lg:gap-10">
+        <div className="space-y-3">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            Our Blogs
+          </h2>
+          <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+            Stores about design, techlogy, and the web.
+          </p>
         </div>
-        <div className="grid max-w-3xl gap-6 sm:max-w-none sm:grid-cols-2 lg:grid-cols-3">
-          <div className="flex flex-col space-y-2">
-            <Link className="font-medium group" href="#">
-              <h3 className="text-xl font-semibold leading-snug transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-300 dark:group-hover:text-gray-300">
-                The Art of Automation: How I Turned My Home into a Smart Haven
-              </h3>
-              <p className="text-sm leading-loose text-gray-500 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400">
-                Gone are the days of manual switches and mundane chores. With a few clever hacks and the power of
-                automation, I've transformed my living space into a futuristic oasis of convenience and comfort.
-              </p>
-            </Link>
-            <Link className="self-start mt-auto text-sm font-medium" href="#">
-              Read More
-            </Link>
+        
+
+        <Link
+          className=" w-full flex items-center justify-center mb-10 gap-4 text-primary-500 dark:text-primary-400"
+          href="#"
+          >
+          <span className="font-medium">View all posts</span>
+          <ChevronRightIcon className="w-6 h-6" />
+        </Link>
+        
+      </div>
+      {isLoading && <SkeletonLoading number={2}/>}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        {blogs.map((blog) => (
+          <div key={blog.id} className="flex flex-col items-stretch gap-2">
+            <Card>
+              <CardHeader className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="grid gap-1.5">
+                    <CardTitle>{blog.title}</CardTitle>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Posted on {new Date(blog.createdAt).toLocaleString()}
+                    </p>
+                    <CardDescription>
+                      {blog.content.split(" ").slice(0, 50).join(" ")}
+                      {blog.content.split(" ").length > 50 && <span>...</span>}
+                    </CardDescription>
+
+                    {blog.content.split(" ").length > 50 && (
+                      <div className="flex items-center gap-2 text-sm font-bold">
+                        <ArrowUpCircleIcon className="w-5 h-5 stroke-true" />
+                        <Link href="#">Read More</Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <img
+                      alt="Avatar"
+                      className="rounded-full"
+                      height={40}
+                      src="./hansraj.png"
+                      style={{
+                        aspectRatio: "40/40",
+                        objectFit: "cover",
+                      }}
+                      width={40}
+                    />
+                    <div className="text-sm font-medium not-italic">
+                      {blog.author}
+                      <span className="block text-xs font-normal text-gray-500 dark:text-gray-400">
+                        Developer
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <div className="flex flex-col space-y-2">
-            <Link className="font-medium group" href="#">
-              <h3 className="text-xl font-semibold leading-snug transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-300">
-                The Great Outdoors: Embracing Nature in a Digital World
-              </h3>
-              <p className="text-sm leading-loose text-gray-500 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400">
-                In a world dominated by screens and social media, the call of the wild often goes unheard. But I've
-                discovered the perfect balance between the digital realm and the natural world, and I'm here to share my
-                journey.
-              </p>
-            </Link>
-            <Link className="self-start mt-auto text-sm font-medium" href="#">
-              Read More
-            </Link>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <Link className="font-medium group" href="#">
-              <h3 className="text-xl font-semibold leading-snug transition-colors group-hover:text-gray-700 dark:group-hover:text-gray-300">
-                The Power of Words: A Journey Through Literary Landscapes
-              </h3>
-              <p className="text-sm leading-loose text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 dark:group-hover:text-gray-400">
-                Books have the magical ability to transport us to far-off places, introduce us to fascinating
-                characters, and spark our imagination. Join me as I explore the wonders of the literary world.
-              </p>
-            </Link>
-            <Link className="self-start mt-auto text-sm font-medium" href="#">
-              Read More
-            </Link>
-          </div>
-        </div>
+        ))}
       </div>
     </section>
-  )
+  );
 }
-
