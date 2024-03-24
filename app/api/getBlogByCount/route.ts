@@ -7,7 +7,7 @@ export async function GET(req:NextRequest) {
     try {
         const url = new URL(req.url);
         const count = url.searchParams.get("count");
-        console.log(url)
+        // console.log(url)
         const blogs = await prismadb.blog.findMany({
             take:Number(count),
         });
