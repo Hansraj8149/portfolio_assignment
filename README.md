@@ -1,5 +1,6 @@
 # Portfolio Assignment
 
+## Deployment Link: https://hansraj-portfolio.vercel.app/
 ## Description
 This project is a single-page application (SPA) showcasing a portfolio website that integrates with a REST API to display dynamic content. It aims to evaluate skills in creating responsive designs, leveraging modern front-end frameworks, designing visually appealing UIs, and building fast, modern websites.
 
